@@ -2,33 +2,95 @@
 //  SimpleCalcTests.swift
 //  SimpleCalcTests
 //
-//  Created by Vincent Saluzzo on 29/03/2019.
-//  Copyright © 2019 Vincent Saluzzo. All rights reserved.
+//  Created by Lilian Grasset on 10/01/2023.
+//  Copyright © 2023 Vincent Saluzzo. All rights reserved.
 //
 
 import XCTest
-@testable import SimpleCalc
+@testable import CountOnMe
 
 class SimpleCalcTests: XCTestCase {
+    var calc: SimpleCalc!
 
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        super.setUp()
+
+        calc = SimpleCalc()
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func getElements(from expression: String) {
+        calc.operationElements = expression.split(separator: " ").map { "\($0)" }
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testGiven1plus1_WhenComputingIt_ThenResultIsEqualTo2() {
+        let expression = "1 + 1"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertEqual(result, 2)
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testGivenMaxNumberPlus1_WhenComputingIt_ThenResultIsNil() {
+        let expression = "\(Int.max) + 1"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNil(result)
     }
 
+    func testGiven1minus1_WhenComputingIt_ThenResultIsEqualTo0() {
+        let expression = "1 - 1"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertEqual(result, 0)
+    }
+
+    func testGivenMinNumberMinus1_WhenComputingIt_ThenResultIsNil() {
+        let expression = "\(Int.min) - 1"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNil(result)
+    }
+
+    func testGiven1times2_WhenComputingIt_ThenResultIsEqualTo2() {
+        let expression = "1 × 2"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertEqual(result, 2)
+    }
+
+    func testGivenMaxNumberTimesItself_WhenComputingIt_ThenResultIsNil() {
+        let expression = "\(Int.max) × \(Int.max)"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNil(result)
+    }
+
+    func testGiven4dividedBy2_WhenComputingIt_ThenResultIsEqualTo2() {
+        let expression = "4 ÷ 2"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertEqual(result, 2)
+    }
+
+    func testGiven1dividedBy0_WhenComputingIt_ThenResultIsNil() {
+        let expression = "1 ÷ 0"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNil(result)
+    }
 }
