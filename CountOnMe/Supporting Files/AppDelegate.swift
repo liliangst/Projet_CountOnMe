@@ -17,6 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        if #available(macCatalyst 16.0, *) {
+            UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.forEach { windowScene in
+                windowScene.sizeRestrictions?.maximumSize = CGSize(width: 414, height: 736)
+                windowScene.sizeRestrictions?.minimumSize = CGSize(width: 414, height: 736)
+                windowScene.sizeRestrictions?.allowsFullScreen = false
+            }
+        }
         return true
     }
 
