@@ -12,29 +12,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
 
-    var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
-    }
-
-    // Error check computed variables
-    var expressionIsCorrect: Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "×" && elements.last != "÷"
-    }
-
-    var expressionHaveEnoughElement: Bool {
-        return elements.count >= 3
-    }
-
-    var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "×" && elements.last != "÷"
-    }
+    var calc: SimpleCalc!
 
     var expressionHaveResult: Bool {
         return textView.text.firstIndex(of: "=") != nil
     }
 
     var numberIsNotTooLong: Bool {
-        return elements.last?.count ?? 0 < 9
+        return calc.elements.last?.count ?? 0 < 9
     }
 
     var errorOccured: Bool {
@@ -45,6 +30,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        calc = SimpleCalc()
     }
 
     // View actions
@@ -54,7 +40,7 @@ class ViewController: UIViewController {
         }
 
         if expressionHaveResult || errorOccured {
-            textView.text = ""
+            calc.elements.removeAll()
         }
 
         // Check if the number is less than 9 digits long
@@ -62,7 +48,8 @@ class ViewController: UIViewController {
             return
         }
 
-        textView.text.append(numberText)
+        calc.addNumber(numberText)
+        refreshTextView()
     }
 
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
@@ -70,11 +57,12 @@ class ViewController: UIViewController {
             return
         }
 
-        if canAddOperator {
+        if calc.canAddOperator {
             if expressionHaveResult {
                 textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
             }
-            textView.text.append(" + ")
+            calc.addOperator("+")
+            refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
                                             message: "Un operateur est déja mis !", preferredStyle: .alert)
@@ -88,11 +76,12 @@ class ViewController: UIViewController {
             return
         }
 
-        if canAddOperator {
+        if calc.canAddOperator {
             if expressionHaveResult {
                 textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
             }
-            textView.text.append(" - ")
+            calc.addOperator("-")
+            refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
                                             message: "Un operateur est déja mis !", preferredStyle: .alert)
@@ -106,11 +95,12 @@ class ViewController: UIViewController {
             return
         }
 
-        if canAddOperator {
+        if calc.canAddOperator {
             if expressionHaveResult {
                 textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
             }
-            textView.text.append(" × ")
+            calc.addOperator("×")
+            refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
                                             message: "Un operateur est déja mis !", preferredStyle: .alert)
@@ -124,11 +114,12 @@ class ViewController: UIViewController {
             return
         }
 
-        if canAddOperator {
+        if calc.canAddOperator {
             if expressionHaveResult {
                 textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
             }
-            textView.text.append(" ÷ ")
+            calc.addOperator("÷")
+            refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
                                             message: "Un operateur est déja mis !", preferredStyle: .alert)
@@ -138,23 +129,19 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-        guard expressionIsCorrect && !errorOccured else {
+        guard calc.expressionIsCorrect && !errorOccured else {
             let alertVC = UIAlertController(title: "Zéro!",
                                             message: "Entrez une expression correcte !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             return self.present(alertVC, animated: true, completion: nil)
         }
 
-        guard expressionHaveEnoughElement else {
+        guard calc.expressionHaveEnoughElement else {
             let alertVC = UIAlertController(title: "Zéro!",
                                             message: "Démarrez un nouveau calcul !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             return self.present(alertVC, animated: true, completion: nil)
         }
-
-        let calc = SimpleCalc()
-
-        calc.operationElements = elements
 
         // Check if no error occured to show the result
         if let result = calc.compute() {
@@ -163,6 +150,10 @@ class ViewController: UIViewController {
             textView.text = "Error"
         }
 
+    }
+
+    func refreshTextView() {
+        textView.text = calc.expression
     }
 
 }

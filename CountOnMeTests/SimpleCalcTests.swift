@@ -19,7 +19,7 @@ class SimpleCalcTests: XCTestCase {
     }
 
     func getElements(from expression: String) {
-        calc.operationElements = expression.split(separator: " ").map { "\($0)" }
+        calc.elements = expression.split(separator: " ").map { "\($0)" }
     }
 
     func testGiven1plus1_WhenComputingIt_ThenResultIsEqualTo2() {
@@ -92,5 +92,55 @@ class SimpleCalcTests: XCTestCase {
         let result = calc.compute()
 
         XCTAssertNil(result)
+    }
+
+    func testGivenEmptyExpression_WhenAddingElements_ThenElementsContainsExpression() {
+        calc.addNumber("1")
+        calc.addOperator("+")
+        calc.addNumber("1")
+
+        let elements = calc.elements
+
+        XCTAssertEqual(elements, ["1", "+", "1"])
+    }
+
+    func testGivenEmptyExpression_WhenAddingNumber1TwoTimes_ThenFirstElementsShouldBe11() {
+        calc.addNumber("1")
+        calc.addNumber("1")
+
+        let firstElements = calc.elements.first
+
+        XCTAssertNotNil(firstElements)
+        XCTAssertEqual(firstElements, "11")
+    }
+
+    func testGivenElements_WhenAccessingExpression_ThenReturnExpressionInSingleString() {
+        calc.addNumber("1")
+        calc.addOperator("+")
+        calc.addNumber("1")
+
+        let expression = calc.expression
+
+        XCTAssertEqual(expression, "1 + 1")
+    }
+
+    func testGivenIncorrectExpression_WhenCheckingIfExpressionIsCorrect_ThenShouldBeFalse() {
+        calc.addNumber("1")
+        calc.addOperator("+")
+
+        XCTAssertFalse(calc.expressionIsCorrect)
+    }
+
+    func testGivenIncorrectExpression_WhenCheckingIfExpressionHaveEnoughElements_ThenShouldBeFalse() {
+        calc.addNumber("1")
+        calc.addOperator("+")
+
+        XCTAssertFalse(calc.expressionHaveEnoughElement)
+    }
+
+    func testGivenExpressionEndedWithNumber_WhenCkeckingIfCanAddOperator_ThenShouldBeTrue() {
+        calc.addNumber("1")
+
+        XCTAssertTrue(calc.canAddOperator)
     }
 }
