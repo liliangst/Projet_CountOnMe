@@ -94,6 +94,15 @@ class SimpleCalcTests: XCTestCase {
         XCTAssertNil(result)
     }
 
+    func testGivenUnknownOperand_WhenComputingIt_ThenResultIsNil() {
+        let expression = "2 ^ 2"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNil(result)
+    }
+
     func testGivenEmptyExpression_WhenAddingElements_ThenElementsContainsExpression() {
         calc.addNumber("1")
         calc.addOperator("+")
@@ -142,5 +151,25 @@ class SimpleCalcTests: XCTestCase {
         calc.addNumber("1")
 
         XCTAssertTrue(calc.canAddOperator)
+    }
+
+    func testGiven1plus1plus1_WhenComputingIt_ThenResultShouldBe3() {
+        let expression = "1 + 1 + 1"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result, 3)
+    }
+
+    func testGiven1plus1times2_WhenComputingIt_ThenResultShouldBe3() {
+        let expression = "1 + 1 × 2"
+        getElements(from: expression)
+
+        let result = calc.compute()
+
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result, 3)
     }
 }

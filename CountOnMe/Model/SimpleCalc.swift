@@ -48,40 +48,53 @@ class SimpleCalc {
 
     // Compute the operation et return the result
     func compute() -> Int? {
+        var result: Int = 0
 
-        let left = Int(elements[0])!
-        let operand = elements[1]
-        let right = Int(elements[2])!
+        var left: Int!
+        var operand: String!
+        var right: Int!
+        while elements.count > 1 {
 
-        let result: Int
-        switch operand {
-        case "+":
-            if left < Int.max - right {
-                result = left + right
-            } else {
-                return nil
+            // Find the first apperance of the priroty operators
+            let operandIndex = elements.firstIndex(where: { "×÷".contains($0) }) ?? 1
+            let leftIndex = operandIndex - 1
+            let rightIndex = operandIndex + 1
+
+            left = Int(elements[leftIndex])!
+            operand = elements[operandIndex]
+            right = Int(elements[rightIndex])!
+
+            switch operand {
+            case "+":
+                if left < Int.max - right {
+                    result = left + right
+                } else {
+                    return nil
+                }
+            case "-":
+                if left > Int.min + right {
+                    result = left - right
+                } else {
+                    return nil
+                }
+            case "×":
+                if right == 0 || left < Int.max / right {
+                    result = left * right
+                } else {
+                    return nil
+                }
+            case "÷":
+                if right != 0 {
+                    result = left / right
+                } else {
+                    return nil
+                }
+            default: return nil
             }
-        case "-":
-            if left > Int.min + right {
-                result = left - right
-            } else {
-                return nil
-            }
-        case "×":
-            if right == 0 || left < Int.max / right {
-                result = left * right
-            } else {
-                return nil
-            }
-        case "÷":
-            if right != 0 {
-                result = left / right
-            } else {
-                return nil
-            }
-        default: fatalError("Unknown operator !")
+
+            elements.removeSubrange(leftIndex...rightIndex)
+            elements.insert("\(result)", at: leftIndex)
         }
-
         return result
     }
 }
