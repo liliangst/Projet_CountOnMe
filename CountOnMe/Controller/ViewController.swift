@@ -18,10 +18,6 @@ class ViewController: UIViewController {
         return textView.text.firstIndex(of: "=") != nil
     }
 
-    var numberIsNotTooLong: Bool {
-        return calc.elements.last?.count ?? 0 < 9
-    }
-
     var errorOccured: Bool {
         return textView.text == "Error"
     }
@@ -29,23 +25,15 @@ class ViewController: UIViewController {
     // View Life cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         calc = SimpleCalc()
     }
 
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
-        guard let numberText = sender.title(for: .normal) else {
-            return
-        }
+        guard let numberText = sender.title(for: .normal) else { return }
 
         if expressionHaveResult || errorOccured {
-            calc.elements.removeAll()
-        }
-
-        // Check if the number is less than 9 digits long
-        guard numberIsNotTooLong else {
-            return
+            calc.empty()
         }
 
         calc.addNumber(numberText)
@@ -53,14 +41,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        guard !errorOccured else {
-            return
-        }
+        guard !errorOccured else { return }
 
         if calc.canAddOperator {
-            if expressionHaveResult {
-                textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
-            }
             calc.addOperator("+")
             refreshTextView()
         } else {
@@ -72,14 +55,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        guard !errorOccured else {
-            return
-        }
+        guard !errorOccured else { return }
 
         if calc.canAddOperator {
-            if expressionHaveResult {
-                textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
-            }
             calc.addOperator("-")
             refreshTextView()
         } else {
@@ -91,14 +69,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
-        guard !errorOccured else {
-            return
-        }
+        guard !errorOccured else { return }
 
         if calc.canAddOperator {
-            if expressionHaveResult {
-                textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
-            }
             calc.addOperator("×")
             refreshTextView()
         } else {
@@ -110,14 +83,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func tappedDivisionButton(_ sender: UIButton) {
-        guard !errorOccured else {
-            return
-        }
+        guard !errorOccured else { return }
 
         if calc.canAddOperator {
-            if expressionHaveResult {
-                textView.text.removeSubrange(...textView.text.lastIndex(of: "=")!)
-            }
             calc.addOperator("÷")
             refreshTextView()
         } else {
@@ -156,4 +124,8 @@ class ViewController: UIViewController {
         textView.text = calc.expression
     }
 
+    @IBAction func tappedResetButton(_ sender: UIButton) {
+        textView.text = ""
+        calc.empty()
+    }
 }

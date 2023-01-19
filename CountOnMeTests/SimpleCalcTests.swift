@@ -172,4 +172,13 @@ class SimpleCalcTests: XCTestCase {
         XCTAssertNotNil(result)
         XCTAssertEqual(result, 3)
     }
+
+    func testGivenExpressionInElements_WhenEmpyingIt_ThenElementsIsEmpty() {
+        let expression = "1 + 1"
+        getElements(from: expression)
+
+        calc.empty()
+
+        XCTAssertEqual(calc.elements.count, 0)
+    }
 }

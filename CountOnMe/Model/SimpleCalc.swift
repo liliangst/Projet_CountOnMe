@@ -97,4 +97,8 @@ class SimpleCalc {
         }
         return result
     }
+
+    func empty() {
+        elements.removeAll()
+    }
 }
