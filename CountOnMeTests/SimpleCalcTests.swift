@@ -18,67 +18,40 @@ class SimpleCalcTests: XCTestCase {
         calc = SimpleCalc()
     }
 
-    func getElements(from expression: String) {
+    func setElements(from expression: String) {
         calc.elements = expression.split(separator: " ").map { "\($0)" }
     }
 
     func testGiven1plus1_WhenComputingIt_ThenResultIsEqualTo2() {
         let expression = "1 + 1"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
         XCTAssertEqual(result, 2)
     }
 
-    func testGivenMaxNumberPlus1_WhenComputingIt_ThenResultIsNil() {
-        let expression = "\(Int.max) + 1"
-        getElements(from: expression)
-
-        let result = calc.compute()
-
-        XCTAssertNil(result)
-    }
-
     func testGiven1minus1_WhenComputingIt_ThenResultIsEqualTo0() {
         let expression = "1 - 1"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
         XCTAssertEqual(result, 0)
     }
 
-    func testGivenMinNumberMinus1_WhenComputingIt_ThenResultIsNil() {
-        let expression = "\(Int.min) - 1"
-        getElements(from: expression)
-
-        let result = calc.compute()
-
-        XCTAssertNil(result)
-    }
-
     func testGiven1times2_WhenComputingIt_ThenResultIsEqualTo2() {
         let expression = "1 × 2"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
         XCTAssertEqual(result, 2)
     }
 
-    func testGivenMaxNumberTimesItself_WhenComputingIt_ThenResultIsNil() {
-        let expression = "\(Int.max) × \(Int.max)"
-        getElements(from: expression)
-
-        let result = calc.compute()
-
-        XCTAssertNil(result)
-    }
-
     func testGiven4dividedBy2_WhenComputingIt_ThenResultIsEqualTo2() {
         let expression = "4 ÷ 2"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
@@ -87,7 +60,7 @@ class SimpleCalcTests: XCTestCase {
 
     func testGiven1dividedBy0_WhenComputingIt_ThenResultIsNil() {
         let expression = "1 ÷ 0"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
@@ -96,7 +69,7 @@ class SimpleCalcTests: XCTestCase {
 
     func testGivenUnknownOperand_WhenComputingIt_ThenResultIsNil() {
         let expression = "2 ^ 2"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
@@ -155,7 +128,7 @@ class SimpleCalcTests: XCTestCase {
 
     func testGiven1plus1plus1_WhenComputingIt_ThenResultShouldBe3() {
         let expression = "1 + 1 + 1"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
@@ -165,7 +138,7 @@ class SimpleCalcTests: XCTestCase {
 
     func testGiven1plus1times2_WhenComputingIt_ThenResultShouldBe3() {
         let expression = "1 + 1 × 2"
-        getElements(from: expression)
+        setElements(from: expression)
 
         let result = calc.compute()
 
@@ -175,10 +148,26 @@ class SimpleCalcTests: XCTestCase {
 
     func testGivenExpressionInElements_WhenEmpyingIt_ThenElementsIsEmpty() {
         let expression = "1 + 1"
-        getElements(from: expression)
+        setElements(from: expression)
 
         calc.empty()
 
         XCTAssertEqual(calc.elements.count, 0)
+    }
+
+    func testGivenNumberWith6Decimals_WhenFormatingItTo5_ThenStringNumberHas5DecimalsAndIsRounded() {
+        let number: Double = 1.234567
+
+        let formatedNumber = calc.format(number)
+
+        XCTAssertEqual(formatedNumber, "1.23457")
+    }
+
+    func testGivenDoubleHas0AsDecimal_WhenFormatingIt_ThenStringNumberShouldNotHave0AsDecimal() {
+        let number: Double = 1.0
+
+        let formatedNumber = calc.format(number)
+
+        XCTAssertEqual(formatedNumber, "1")
     }
 }

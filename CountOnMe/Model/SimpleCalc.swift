@@ -1,5 +1,5 @@
 //
-//  Calculus.swift
+//  SimpleCalc.swift
 //  CountOnMe
 //
 //  Created by Lilian Grasset on 10/01/2023.
@@ -11,6 +11,8 @@ class SimpleCalc {
 
     var elements: [String] = [String]()
 
+    var maxDecimalsFormating = 5
+
     // Get the expression as a single string
     var expression: String {
         elements.joined(separator: " ")
@@ -20,6 +22,7 @@ class SimpleCalc {
         elements.append(operatorString)
     }
 
+    // Add a digit to the current number or add a new number to elements
     func addNumber(_ numberString: String) {
         if !expressionEndWithOperator, let lastIndex = elements.indices.last {
             elements[lastIndex] = elements[lastIndex] + numberString
@@ -43,16 +46,16 @@ class SimpleCalc {
     }
 
     var canAddOperator: Bool {
-        !expressionEndWithOperator
+        !expressionEndWithOperator && ((elements.last?.allSatisfy({ $0.isNumber })) != nil)
     }
 
-    // Compute the operation et return the result
-    func compute() -> Int? {
-        var result: Int = 0
+    // Compute the operation et return the result or nil if an error occured
+    func compute() -> Double? {
+        var result: Double = 0
 
-        var left: Int!
+        var left: Double!
         var operand: String!
-        var right: Int!
+        var right: Double!
         while elements.count > 1 {
 
             // Find the first apperance of the priroty operators
@@ -60,29 +63,17 @@ class SimpleCalc {
             let leftIndex = operandIndex - 1
             let rightIndex = operandIndex + 1
 
-            left = Int(elements[leftIndex])!
+            left = Double(elements[leftIndex])!
             operand = elements[operandIndex]
-            right = Int(elements[rightIndex])!
+            right = Double(elements[rightIndex])!
 
             switch operand {
             case "+":
-                if left < Int.max - right {
-                    result = left + right
-                } else {
-                    return nil
-                }
+                result = left + right
             case "-":
-                if left > Int.min + right {
-                    result = left - right
-                } else {
-                    return nil
-                }
+                result = left - right
             case "×":
-                if right == 0 || left < Int.max / right {
-                    result = left * right
-                } else {
-                    return nil
-                }
+                result = left * right
             case "÷":
                 if right != 0 {
                     result = left / right
@@ -92,8 +83,11 @@ class SimpleCalc {
             default: return nil
             }
 
+            // Remove the current operation
             elements.removeSubrange(leftIndex...rightIndex)
-            elements.insert("\(result)", at: leftIndex)
+
+            // Insert the result of the operation in the expression
+            elements.insert(format(result), at: leftIndex)
         }
         return result
     }
@@ -101,4 +95,20 @@ class SimpleCalc {
     func empty() {
         elements.removeAll()
     }
+
+    // Formating a number so it has 5 decimals or less if it ends with zeros
+    func format(_ number: Double) -> String {
+        var formatedValue = String(format: "%.\(maxDecimalsFormating)f", number)
+
+        while formatedValue.last == "0" {
+            formatedValue.removeLast()
+        }
+
+        if formatedValue.last == "." {
+            formatedValue.removeLast()
+        }
+
+        return formatedValue
+    }
+
 }

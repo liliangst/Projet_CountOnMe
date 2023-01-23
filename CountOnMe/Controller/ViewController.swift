@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
 
-    var calc: SimpleCalc!
+    let calc: SimpleCalc = SimpleCalc()
 
     var expressionHaveResult: Bool {
         return textView.text.firstIndex(of: "=") != nil
@@ -22,10 +22,8 @@ class ViewController: UIViewController {
         return textView.text == "Error"
     }
 
-    // View Life cycles
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        calc = SimpleCalc()
+    private func refreshTextView() {
+        textView.text = calc.expression
     }
 
     // View actions
@@ -48,7 +46,7 @@ class ViewController: UIViewController {
             refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
-                                            message: "Un operateur est déja mis !", preferredStyle: .alert)
+                                            message: "On ne peut pas ajouter d'opérateur !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
         }
@@ -62,7 +60,7 @@ class ViewController: UIViewController {
             refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
-                                            message: "Un operateur est déja mis !", preferredStyle: .alert)
+                                            message: "On ne peut pas ajouter d'opérateur !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
         }
@@ -76,7 +74,7 @@ class ViewController: UIViewController {
             refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
-                                            message: "Un operateur est déja mis !", preferredStyle: .alert)
+                                            message: "On ne peut pas ajouter d'opérateur !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
         }
@@ -90,7 +88,7 @@ class ViewController: UIViewController {
             refreshTextView()
         } else {
             let alertVC = UIAlertController(title: "Zéro!",
-                                            message: "Un operateur est déja mis !", preferredStyle: .alert)
+                                            message: "On ne peut pas ajouter d'opérateur !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
         }
@@ -113,19 +111,16 @@ class ViewController: UIViewController {
 
         // Check if no error occured to show the result
         if let result = calc.compute() {
-            textView.text.append(" = \(result)")
+            textView.text.append(" = \(calc.format(result))")
         } else {
             textView.text = "Error"
         }
 
     }
 
-    func refreshTextView() {
-        textView.text = calc.expression
-    }
-
     @IBAction func tappedResetButton(_ sender: UIButton) {
         textView.text = ""
         calc.empty()
     }
+
 }
