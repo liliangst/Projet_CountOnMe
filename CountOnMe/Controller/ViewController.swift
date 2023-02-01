@@ -52,11 +52,27 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: CalculationDelegate {
+    func askForNumber() {
+        displayAlert("Commencez par ajouter un nombre !")
+    }
+
+    func wrongOperator() {
+        displayAlert("Un operateur est déja mis !")
+    }
+
+    func shouldCreateNewCalculation() {
+        displayAlert("Démarrez un nouveau calcul !")
+    }
+
+    func expressionIsIncorrect() {
+        displayAlert("Entrez une expression correcte !")
+    }
+
     func updateCalculText(_ text: String) {
         textView.text = text
     }
 
-    func displayAlert(_ text: String) {
+    private func displayAlert(_ text: String) {
         let alertVC = UIAlertController(title: "Zéro!",
                                         message: text, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))

@@ -265,7 +265,23 @@ class DummyViewController: CalculationDelegate {
     var text: String!
     var alertText: String!
 
-    func displayAlert(_ text: String) {
+    func askForNumber() {
+        displayAlert("Commencez par ajouter un nombre !")
+    }
+
+    func wrongOperator() {
+        displayAlert("Un operateur est déja mis !")
+    }
+
+    func shouldCreateNewCalculation() {
+        displayAlert("Démarrez un nouveau calcul !")
+    }
+
+    func expressionIsIncorrect() {
+        displayAlert("Entrez une expression correcte !")
+    }
+
+    private func displayAlert(_ text: String) {
         alertText = text
     }
 

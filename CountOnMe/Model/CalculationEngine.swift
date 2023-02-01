@@ -8,8 +8,11 @@
 import Foundation
 
 protocol CalculationDelegate: AnyObject {
+    func expressionIsIncorrect()
+    func askForNumber()
+    func wrongOperator()
+    func shouldCreateNewCalculation()
     func updateCalculText(_ text: String)
-    func displayAlert(_ text: String)
 }
 
 enum CalculationError: Error {
@@ -152,21 +155,21 @@ extension CalculationEngine {
         }
 
         guard expressionEndWithOperator else {
-            delegate?.displayAlert("Commencez par ajouter un nombre !")
+            delegate?.askForNumber()
             return
         }
 
-        delegate?.displayAlert("Un operateur est déja mis !")
+        delegate?.wrongOperator()
     }
 
     func tappedEqualButton() {
         guard expressionIsCorrect else {
-            delegate?.displayAlert("Entrez une expression correcte !")
+            delegate?.expressionIsIncorrect()
             return
         }
 
         guard expressionHaveEnoughElement else {
-            delegate?.displayAlert("Démarrez un nouveau calcul !")
+            delegate?.shouldCreateNewCalculation()
             return
         }
 
